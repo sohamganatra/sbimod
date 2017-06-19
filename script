@@ -1,0 +1,16 @@
+yum localinstall --disablerepo=* *.rpm
+tar xvf nginx-1.9.9.tar.gz
+tar xvf php-5.6.16.tar.bz2
+tar xvf modsecurity-2.9.0.tar.gz
+cd /usr/src/modsecurity-2.9.0 && ./configure --enable-standalone-module --disable-mlogc
+make && make install
+cd /usr/src/nginx-1.9.9 && ./configure --add-module=../modsecurity-2.9.0/nginx/modsecurity/
+make && make install
+ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
+tar xvf master
+cd SpiderLabs-owasp-modsecurity-crs-60c8bc9
+cp /usr/src/modsecurity-2.9.0/modsecurity.conf-recommended /usr/local/nginx/conf/modsecurity.conf
+cp /usr/src/modsecurity-2.9.0/unicode.mapping /usr/local/nginx/conf/
+cat base_rules/*.conf >> /usr/local/nginx/conf/modsecurity.conf
+cp base_rules/*.data /usr/local/nginx/conf
+/usr/local/nginx/conf/nginx.conf
